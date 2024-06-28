@@ -4,6 +4,12 @@ import java.io.*;
 import java.net.*;
 
 public class PlayerServer {
+    /*
+     * The PlayerServer class represents the server in the communication game.
+     * The server waits for the first message from the client and then alternates between sending and receiving messages.
+     * The server sends a response to each message received.
+      
+     */
     public static void main(String[] args) {
         int port = 12345;
         int messageCounter = 0;

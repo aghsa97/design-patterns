@@ -3,6 +3,11 @@ package com.mycompany.app.easy.client_server_communication;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class Player implements Runnable {
+    /*
+     * The Player class represents a player in the communication game.
+     * Each player has a name, a message counter, and a flag indicating whether it is the initiator or the receiver.
+     * 
+     */
     private String name;
     private int messageCounter;
     private boolean isInitiator;

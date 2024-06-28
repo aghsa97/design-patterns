@@ -21,10 +21,10 @@ mvn clean install
 java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Main
 ```
 
-## run the code in different processes
+## run the code in different processes (in two different terminals)
 
 ```bash
 mvn clean install
-java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Player
-java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Player
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.PlayerServer
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.PlayerClient
 ```

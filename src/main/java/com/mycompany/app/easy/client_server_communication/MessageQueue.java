@@ -4,6 +4,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class MessageQueue {
+    /*
+     * The MessageQueue class is a singleton class that holds a blocking queue of messages.
+     * It is used to pass messages between the initiator and the receiver.
+     
+     */
     private static MessageQueue instance;
     private final BlockingQueue<Message> queue;
 

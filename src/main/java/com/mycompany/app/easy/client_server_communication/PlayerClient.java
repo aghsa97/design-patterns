@@ -4,6 +4,11 @@ import java.io.*;
 import java.net.*;
 
 public class PlayerClient {
+    /*
+     * The PlayerClient class represents the client in the communication game.
+     * The client sends the first message and then alternates between sending and receiving messages.
+     
+     */
     public static void main(String[] args) {
         String hostname = "localhost";
         int port = 12345;

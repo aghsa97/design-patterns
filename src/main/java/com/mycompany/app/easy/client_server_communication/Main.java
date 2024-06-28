@@ -1,6 +1,11 @@
 package com.mycompany.app.easy.client_server_communication;
 
 public class Main {
+    /*
+     * The main method creates two players, one for the initiator and one for the receiver.
+     * It creates two threads, one for each player, and starts them.
+      
+     */
     public static void main(String[] args) {
         Player player1 = new Player("initiator", true);
         Player player2 = new Player("receiver", false);
