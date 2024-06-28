@@ -18,5 +18,5 @@ The use case for this task is as bellow:
 
 ```bash
 mvn clean install
-java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.medium.client_server_communication.Main
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Main
 ```
