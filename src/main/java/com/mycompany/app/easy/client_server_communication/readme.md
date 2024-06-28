@@ -14,9 +14,17 @@ The use case for this task is as bellow:
 6. document for every class the responsibilities it has.
 7. opposite to 5: have every player in a separate JAVA process (different PID).
 
-## run the code
+## run the code in the same process
 
 ```bash
 mvn clean install
 java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Main
+```
+
+## run the code in different processes
+
+```bash
+mvn clean install
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Player
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.client_server_communication.Player
 ```
