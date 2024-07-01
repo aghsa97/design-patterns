@@ -33,4 +33,8 @@ public class Theater {
     public void addMovie(Movie movie) {
         movies.put(movie.getId(), movie);
     }
+
+    public void removeMovie(Movie movie) {
+        movies.remove(movie.getId());
+    }
 }
