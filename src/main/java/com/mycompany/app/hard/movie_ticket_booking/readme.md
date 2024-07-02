@@ -8,7 +8,7 @@
 4. Users should be able to make payments and confirm their booking.
 5. The system should handle concurrent bookings and ensure seat availability is updated in real-time.
 6. The system should support different types of seats (e.g., normal, premium) and pricing.
-7. The system should allow theater administrators to add, update, and remove movies, shows, and seating arrangements.
+7. The system should allow theater administrators to add, update, and remove movies, and seating arrangements.
 8. The system should be scalable to handle a large number of concurrent users and bookings.
 
 ## To run it

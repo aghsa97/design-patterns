@@ -4,7 +4,7 @@ public class User {
     private final String id;
     private String name;
 
-    public User(String id, String name) {
+    public User(String id, String name,boolean isAdmin) {
         this.id = id;
         this.name = name;
     }

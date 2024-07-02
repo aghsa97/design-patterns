@@ -5,12 +5,14 @@ import java.util.Map;
 
 public class TicketBookingSystem {
     private static TicketBookingSystem instance;
+    private Map<String, Movie> movies;
     private Map<String, Theater> theaters;
     private Map<String, Booking> bookings;
 
     private TicketBookingSystem() {
-     theaters = new HashMap<String, Theater>();   
-     bookings = new HashMap<String, Booking>();
+        movies = new HashMap<String, Movie>();
+        theaters = new HashMap<String, Theater>();   
+        bookings = new HashMap<String, Booking>();
     }
 
     public synchronized static TicketBookingSystem getInstance() {
@@ -19,6 +21,10 @@ public class TicketBookingSystem {
         }
 
         return instance;
+    }
+
+    public Map<String, Movie> getMovies() {
+        return movies;
     }
 
     public Map<String, Theater> getTheaters() {
@@ -49,12 +55,27 @@ public class TicketBookingSystem {
         }
     }
 
+    public void addMovie(Movie movie) {
+        movies.put(movie.getId(), movie);
+    }
+
+    public void removeMovie(Movie movie) {
+        movies.remove(movie.getId());
+    }
+
+    // methodes -> getMoviesList(); (req 1) ✅
     public void getMoviesList() {
-        for (Theater theater : theaters.values()) {
-            System.out.println("Theater: " + theater.getName());
-            for(Movie movie: theater.getMovies().values()) {
-                System.out.println("- Movie: " + movie.getName());
-            }
+        for(Movie movie: movies.values()) {
+            System.out.println("Movie id: " + movie.getId() +" Movie: " + movie.getName());
         }
     }
+
+    public void addMovieToTheater(Movie movie, Theater theater) {
+        theater.getMovies().put(movie.getId(), movie);
+    }
+
+    public void removeMovieFromTheater(Movie movie, Theater theater) {
+        theater.getMovies().remove(movie.getId());
+    }
+
 }
