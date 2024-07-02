@@ -1,15 +1,15 @@
 package com.mycompany.app.hard.movie_ticket_booking;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Booking {
     private final String id;
     private final User user;
     private Theater theater;
-    private LocalDate date;
+    private LocalDateTime date;
     private Movie movie;
 
-    public Booking(String id, User user, Theater theater, Movie movie,LocalDate date) {
+    public Booking(String id, User user, Theater theater, Movie movie,LocalDateTime date) {
         this.id = id;
         this.user = user;
         this.movie = movie;
@@ -25,7 +25,7 @@ public class Booking {
         return user;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
@@ -45,7 +45,7 @@ public class Booking {
         this.theater = theater;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
