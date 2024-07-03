@@ -145,7 +145,7 @@ public class TicketBookingSystem {
     }
 
     // methodes -> makeBooking(); (req 2) ✅
-    public void makeBooking(User user) {
+    public synchronized void makeBooking(User user) {
         try {
             getMoviesList();
             
@@ -169,11 +169,21 @@ public class TicketBookingSystem {
                 Movie movie = movies.get(movieId);
                 LocalDateTime showDateTime = showTimes.get(showTime);
                 Seat seat = seatList.get(seatId);
-                seat.setStatus(SeatStatus.BKD);
-                Booking booking = new Booking(user.getId() + movie.getId(), user, theater, movie, seat, showDateTime);
-                bookings.put(booking.getId(), booking);
 
-                bookingConfirmed = true;
+                double amount = getUserPayment("Please make the payment: ");
+                
+                if (amount >= seat.getPrice()) {
+                    System.out.println("Movie is booked successfully...");
+                    if (amount - seat.getPrice() > 0) {
+                        System.out.println("You are getting: " + String.valueOf(amount - seat.getPrice()) + "$ back");
+                    } 
+                    seat.setStatus(SeatStatus.BKD);
+                    Booking booking = new Booking(user.getId() + movie.getId(), user, theater, movie, seat, showDateTime);
+                    bookings.put(booking.getId(), booking);
+                    bookingConfirmed = true;
+                } else {
+                    System.out.println("You don't have enough money to make the payment...");
+                }
             }
         } finally {
             scanner.close();
@@ -219,6 +229,21 @@ public class TicketBookingSystem {
         }
 
         return movieShowTimes;
+    }
+
+    private double getUserPayment(String message) {
+        double amount;
+        while (true) {
+            System.out.print(message);
+            if (scanner.hasNextDouble()) {
+                amount = scanner.nextDouble();
+                System.out.println("---------------");
+                return amount;
+            } else {
+                scanner.next();
+            }
+            System.out.println("Invalid input! Please enter a valid amount.");
+        }
     }
 
     private <T> String getValidInput(Map<String, T> validInputMap, String message) {
