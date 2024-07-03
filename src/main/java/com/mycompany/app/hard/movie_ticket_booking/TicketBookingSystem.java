@@ -7,18 +7,18 @@ import java.util.Map;
 
 public class TicketBookingSystem {
     private static TicketBookingSystem instance;
+    private Map<String, User> users;
     private Map<String, Movie> movies;
     private Map<String, Theater> theaters;
     private Map<String, Booking> bookings;
-    private Map<String, User> users;
 
     private Scanner scanner;
 
     private TicketBookingSystem() {
+        users = new HashMap<String, User>();
         movies = new HashMap<String, Movie>();
         theaters = new HashMap<String, Theater>();   
         bookings = new HashMap<String, Booking>();
-        users = new HashMap<String, User>();
         this.scanner = new Scanner(System.in);
     }
 
@@ -45,7 +45,15 @@ public class TicketBookingSystem {
 
     public void getBookingList() {
         for(Booking booking: bookings.values()) {
-            System.out.println("id: " + booking.getId() +" theater: " + booking.getTheater().getName() + " Name: " + booking.getUser().getName() + " at: " + booking.getDate().toLocalDate().toString() + " -- " + booking.getDate().getHour() + ":" + booking.getDate().getMinute());
+            System.out.println("Booking Details:");
+            System.out.println("id: " + booking.getId());
+            System.out.println("theater: " + booking.getTheater().getName());
+            System.out.println("Name: " + booking.getUser().getName());
+            System.out.println("Date: " + booking.getDate().toLocalDate().toString());
+            System.out.println("Time: " + booking.getDate().getHour() + ":" + String.format("%02d", booking.getDate().getMinute())); // Format minute to always have two digits
+            System.out.println("Seat Number: " + booking.getSeat().getId());
+            System.out.println("Seat Type: " + booking.getSeat().getType());
+            System.out.println("Room: " + booking.getSeat().getRoom().getId());
         }
     }
 
@@ -97,14 +105,36 @@ public class TicketBookingSystem {
         theater.getTheaterSchedule().remove(movie.getId());
     }
 
-    public void addShowTimeToMovieInTheater(LocalDateTime time, String movieId, String theaterId) {
+    public void addShowTimeToMovieInTheater(LocalDateTime time, String movieId, String theaterId, String roomId) {
+        Theater theater = theaters.get(theaterId);
+        theater.getRoomSchadule().put(time.toString() + "MOV_" + String.valueOf(movieId), theater.getRooms().get(roomId));
         Map<String, LocalDateTime> movieShowTimes = getMovieShowTimesWithTheaterId(theaterId, movieId);
         movieShowTimes.put(time.toString(), time);
     }
 
     public void removeShowTimeToMovieInTheater(LocalDateTime time, String movieId, String theaterId) {
+        Theater theater = theaters.get(theaterId);
+        theater.getRoomSchadule().remove(time.toString() + "MOV_" + String.valueOf(movieId));
         Map<String, LocalDateTime> movieShowTimes = getMovieShowTimesWithTheaterId(theaterId, movieId);
         movieShowTimes.remove(time.toString());
+    }
+
+    public void addRoomToTheater(Room room, Theater theater) {
+        theater.getRooms().put(room.getId(), room);
+    }
+
+    public void removeRoomFromTheater(String roomId, Theater theater) {
+        theater.getRooms().remove(roomId);
+    }
+
+    public void addSeatToRoom(Seat seat, Room room) {
+        room.getSeats().put(seat.getId(), seat);
+        seat.setRoom(room);
+    }
+
+    public void removeSeatFromRoom(Seat seat, Room room) {
+        room.getSeats().remove(seat.getId());
+        seat.setRoom(null);
     }
 
     private Map<String, LocalDateTime> getMovieShowTimesWithTheaterId(String theaterId, String movieId) {
@@ -130,10 +160,17 @@ public class TicketBookingSystem {
 
                 String showTime = getValidInput(showTimes, "Enter show time <YYYY-MM-DDTHH:MM> form: ");
 
+                String roomId = showTime + "MOV_" + movieId;
+                Map<String, Seat> seatList = getRoomSeatList(theaterId, roomId);
+
+                String seatId = getValidInput(seatList, "Enter seat number: ");
+
                 Theater theater = theaters.get(theaterId);
                 Movie movie = movies.get(movieId);
                 LocalDateTime showDateTime = showTimes.get(showTime);
-                Booking booking = new Booking(user.getId() + movie.getId(), user, theater, movie, showDateTime);
+                Seat seat = seatList.get(seatId);
+                seat.setStatus(SeatStatus.BKD);
+                Booking booking = new Booking(user.getId() + movie.getId(), user, theater, movie, seat, showDateTime);
                 bookings.put(booking.getId(), booking);
 
                 bookingConfirmed = true;
@@ -141,6 +178,21 @@ public class TicketBookingSystem {
         } finally {
             scanner.close();
         }
+    }
+
+    private Map<String, Seat> getRoomSeatList(String theaterId, String roomId) {
+        Map<String, Seat> seatList = new HashMap<String, Seat>();
+        Theater theater = theaters.get(theaterId);
+        Room room = theater.getRoomSchadule().get(roomId);
+
+        for (Seat seat : room.getSeats().values()) {
+            if (seat.getStatus() != SeatStatus.BKD) {
+                seatList.put(seat.getId(), seat);
+                System.out.println("id: " + seat.getId() + " type: " + seat.getType() + " price: " + seat.getPrice());
+            }
+        }
+
+        return seatList;
     }
 
     private Map<String, Theater> getMovieTheatersList(String movieId) {
@@ -161,6 +213,9 @@ public class TicketBookingSystem {
         Map<String, LocalDateTime> movieShowTimes = theater.getTheaterSchedule().get(movieId);
         for (LocalDateTime showTime : movieShowTimes.values()) {
             System.out.println("show at: " + showTime.toLocalDate().toString() + " -- " + showTime.getHour() + ":" + showTime.getMinute());
+        }
+        for (String showTime : movieShowTimes.keySet()) {
+            System.out.println("show at id: " + showTime);
         }
 
         return movieShowTimes;
@@ -183,4 +238,16 @@ public class TicketBookingSystem {
         }
     }
 
+    public void makeSeats(Room room, int normalSeats, int premium) {
+        for (int seatNum = 0; seatNum < normalSeats + premium; seatNum++) {
+            String key = String.valueOf(seatNum);
+            Seat seat;
+            if (seatNum < premium) {
+                seat = new Seat(key, SeatType.PREMIUM);
+            } else {
+                seat = new Seat(key, SeatType.NORMAL);
+            }
+            addSeatToRoom(seat, room);
+        }
+    }
 }
