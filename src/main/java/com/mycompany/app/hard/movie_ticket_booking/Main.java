@@ -16,7 +16,7 @@ public class Main {
         Movie batman = new Movie("3", "batman", 140);
         Movie superman = new Movie("4", "superman", 140);
 
-        User mou = new User("1", "mou", false);
+        User mou = new User("1", "mou");
 
         LocalDateTime troyTime = LocalDateTime.of(2024, 12, 5, 16, 15);
         LocalDateTime spidermanTime = LocalDateTime.of(2024, 9, 20, 14, 00);

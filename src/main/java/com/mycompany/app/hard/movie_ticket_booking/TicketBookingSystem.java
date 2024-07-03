@@ -144,7 +144,7 @@ public class TicketBookingSystem {
         return movieShowTimes;
     }
 
-    // methodes -> makeBooking(); (req 2) ✅
+    // methodes -> makeBooking(); (req 2) (req 3) (req 4) (req 5) ✅
     public synchronized void makeBooking(User user) {
         try {
             getMoviesList();

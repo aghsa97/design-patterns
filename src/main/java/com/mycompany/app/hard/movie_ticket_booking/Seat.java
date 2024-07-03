@@ -2,7 +2,7 @@ package com.mycompany.app.hard.movie_ticket_booking;
 
 public class Seat {
     private final String id;
-    private final int price;
+    private int price;
     private SeatType type;
     private SeatStatus status;
     private Room room;
@@ -36,6 +36,7 @@ public class Seat {
 
     public void setType(SeatType type) {
         this.type = type;
+        this.price = type.getPrice();
     }
 
     public void setStatus(SeatStatus status) {
