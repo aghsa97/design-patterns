@@ -9,3 +9,8 @@
 5. The system should have a reputation system based on user activity and the quality of their contributions.
 6. Users can search for questions based on keywords, tags, or user profiles.
 7. The system should handle concurrent access and ensure data consistency.
+
+```bash
+mvn clean install
+java -cp target/design-patterns-1.0-SNAPSHOT.jar com.mycompany.app.easy.stack_overflow.Main
+```
