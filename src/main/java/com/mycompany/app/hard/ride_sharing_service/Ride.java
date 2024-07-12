@@ -4,12 +4,22 @@ public class Ride {
     private final String id;
     private final Passenger passenger;
     private Driver driver;
-    private boolean fulfilled;
+    private RideStatus status;
+    private String destination;
 
-    public Ride(String id, Passenger passenger) {
+    public enum RideStatus {
+        REQUESTED,
+        ACCEPTED,
+        IN_PROGRESS,
+        COMPLETED,
+        CANCELLED
+    }
+
+    public Ride(String id, Passenger passenger, String destination) {
         this.id = id;
         this.passenger = passenger;
-        this.fulfilled = false;
+        this.destination = destination;
+        this.status = RideStatus.REQUESTED;
     }
 
     public String getId() {
@@ -24,19 +34,19 @@ public class Ride {
         return driver;
     }
 
-    public boolean getFulfilled() {
-        return fulfilled;
+    public RideStatus getStatus() {
+        return status;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
 
-    public void fulfill() {
-        this.fulfilled = true;
-    }
-
-    public void neglect() {
-        this.fulfilled = false;
+    public void setStatus(RideStatus status) {
+        this.status = status;
     }
 }
