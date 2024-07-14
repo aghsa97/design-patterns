@@ -6,6 +6,8 @@ public class Ride {
     private Driver driver;
     private RideStatus status;
     private String destination;
+    private String startPoint;
+    private RideType type;
 
     public enum RideStatus {
         REQUESTED,
@@ -15,8 +17,15 @@ public class Ride {
         CANCELLED
     }
 
-    public Ride(String id, Passenger passenger, String destination) {
+    public enum RideType {
+        REGULAR,
+        PREMIUM
+    }
+
+    public Ride(String id, Passenger passenger, String startPoint, String destination, RideType type) {
         this.id = id;
+        this.type = type;
+        this.startPoint = startPoint;
         this.passenger = passenger;
         this.destination = destination;
         this.status = RideStatus.REQUESTED;
@@ -40,6 +49,14 @@ public class Ride {
 
     public String getDestination() {
         return destination;
+    }
+
+    public String getStartPoint() {
+        return startPoint;
+    }
+
+    public RideType getType() {
+        return type;
     }
 
     public void setDriver(Driver driver) {

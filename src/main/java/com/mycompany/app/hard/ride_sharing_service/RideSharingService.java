@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.mycompany.app.hard.ride_sharing_service.Driver.DriverStatus;
 import com.mycompany.app.hard.ride_sharing_service.Ride.RideStatus;
+import com.mycompany.app.hard.ride_sharing_service.Ride.RideType;
 
 public class RideSharingService {
     private static RideSharingService instance;
@@ -34,6 +35,49 @@ public class RideSharingService {
             if (driver.getStatus() == DriverStatus.AVAILABLE) {
                 System.out.println("Notifying driver: " + driver.getName() + " about ride request: " + ride.getId());
             }
+        }
+    }
+
+    private void notifyDriver(Ride ride) {
+        Driver driver = ride.getDriver();
+        if (driver != null) {
+            String message = "";
+            switch (ride.getStatus()) {
+                case COMPLETED:
+                    message = "Ride Completed.";
+                    break;
+                case CANCELLED:
+                    message = "Ride canceled.";
+                    break;
+                default:
+                    break;
+            }
+            System.out.println("Notifying driver: " + driver.getName() + " - " + message);
+        }
+    }
+
+    private void notifyPassenger(Ride ride) {
+        Passenger passenger = ride.getPassenger();
+        String message = "";
+        if (passenger != null) {
+            switch (ride.getStatus()) {
+                case REQUESTED:
+                    message = passenger.getName() + " requested a ride";
+                    break;
+                case ACCEPTED:
+                    message = "Your ride has been accepted by driver: " + ride.getDriver().getName();
+                    break;
+                case IN_PROGRESS:
+                    message = "Your ride is in progress.";
+                    break;
+                case COMPLETED:
+                    message = "Your ride has been completed.";
+                    break;
+                case CANCELLED:
+                    message = "Your ride has been cancelled.";
+                    break;
+            }
+            System.out.println("Notifying passenger: " + passenger.getName() + " - " + message);
         }
     }
 
@@ -69,8 +113,8 @@ public class RideSharingService {
         drivers.put(driver.getId(), driver);
     }
 
-    public void requestRide(Passenger passenger, String destination) {
-        Ride requestedRide = new Ride(generateRideId(), passenger, destination);
+    public void requestRide(Passenger passenger, String pickup, String destination, RideType type) {
+        Ride requestedRide = new Ride(generateRideId(), passenger,pickup, destination, type);
         requestedRides.offer(requestedRide);
         notifyDrivers(requestedRide);
     }
@@ -81,8 +125,7 @@ public class RideSharingService {
             rides.put(ride.getId(), ride);
             ride.setStatus(RideStatus.ACCEPTED);
             driver.setStatus(DriverStatus.BUSY);
-
-            // TODO: Notify passenger
+            notifyPassenger(ride);
         }
     }
 
@@ -93,17 +136,15 @@ public class RideSharingService {
                 ride.getDriver().setStatus(DriverStatus.AVAILABLE);
                 ride.setDriver(null);
             }
-
-            // TODO: Notify passenger
-            // TODO: Notify driver
+            notifyDriver(ride);
+            notifyPassenger(ride);
         }
     }
 
     public void startRide(Ride ride) {
         if (ride.getStatus() == RideStatus.ACCEPTED) {
             ride.setStatus(RideStatus.IN_PROGRESS);
-
-            // TODO: Notify passenger
+            notifyPassenger(ride);
         }
     }
 
@@ -111,9 +152,8 @@ public class RideSharingService {
         if (ride.getStatus() == RideStatus.IN_PROGRESS) {
             ride.setStatus(RideStatus.COMPLETED);
             ride.getDriver().setStatus(DriverStatus.AVAILABLE);
-
-            // TODO: Notify passenger
-            // TODO: Notify driver
+            notifyDriver(ride);
+            notifyPassenger(ride);
         }
     }
 }
