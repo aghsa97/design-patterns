@@ -33,7 +33,11 @@ public class RideSharingService {
     private void notifyDrivers(Ride ride) {
         for (Driver driver : drivers.values()) {
             if (driver.getStatus() == DriverStatus.AVAILABLE) {
-                System.out.println("Notifying driver: " + driver.getName() + " about ride request: " + ride.getId());
+                double distance = calculateDistance(driver.getLocation(), ride.getStartPoint());
+                if (distance <= 5.0) { // Notify drivers within 5 km radius
+                    // Send notification to the driver
+                    System.out.println("Notifying driver: " + driver.getName() + " about ride request: " + ride.getId());
+                }
             }
         }
     }
@@ -81,6 +85,31 @@ public class RideSharingService {
         }
     }
 
+    private double calculateFare(String source, String destination, RideType type) {
+        double baseFare = 2.0;
+        double perKmFare = 1.5;
+        double perMinuteFare = 0.25;
+
+        // calculate distance
+        // calculate duration
+        double distance = calculateDistance(source, destination);
+        double duration = calculateDuration(distance);
+        double fare = baseFare + (perKmFare * distance) + (perMinuteFare * duration);
+
+        if (type == RideType.REGULAR) {
+            return fare;
+        }
+        return fare * 1.2;
+    }
+
+    private double calculateDistance(String source, String destination) {
+        return Math.random() * 20 + 1;
+    }
+
+    private double calculateDuration(double distance) {
+        return (distance / 30) * 60;
+    }
+
     
     public static synchronized RideSharingService getInstance() {
         if (instance == null) {
@@ -114,18 +143,21 @@ public class RideSharingService {
     }
 
     public void requestRide(Passenger passenger, String pickup, String destination, RideType type) {
-        Ride requestedRide = new Ride(generateRideId(), passenger,pickup, destination, type);
+        double fare = calculateFare(pickup, destination, type);
+        Ride requestedRide = new Ride(generateRideId(), passenger,pickup, destination, type, fare);
         requestedRides.offer(requestedRide);
         notifyDrivers(requestedRide);
     }
 
     public synchronized void acceptRide(Ride ride, Driver driver) {
         if (driver.getStatus() == DriverStatus.AVAILABLE) {
-            ride.setDriver(driver);
-            rides.put(ride.getId(), ride);
-            ride.setStatus(RideStatus.ACCEPTED);
-            driver.setStatus(DriverStatus.BUSY);
-            notifyPassenger(ride);
+            if (ride.getPassenger().getWallet() >= ride.getFare()) {
+                ride.setDriver(driver);
+                rides.put(ride.getId(), ride);
+                ride.setStatus(RideStatus.ACCEPTED);
+                driver.setStatus(DriverStatus.BUSY);
+                notifyPassenger(ride);
+            }
         }
     }
 
@@ -152,6 +184,8 @@ public class RideSharingService {
         if (ride.getStatus() == RideStatus.IN_PROGRESS) {
             ride.setStatus(RideStatus.COMPLETED);
             ride.getDriver().setStatus(DriverStatus.AVAILABLE);
+            ride.getPassenger().setWallet(ride.getPassenger().getWallet() - ride.getFare());
+            ride.getDriver().setWallet(ride.getDriver().getWallet() + ride.getFare());
             notifyDriver(ride);
             notifyPassenger(ride);
         }

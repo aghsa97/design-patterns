@@ -8,6 +8,7 @@ public class Ride {
     private String destination;
     private String startPoint;
     private RideType type;
+    private double fare;
 
     public enum RideStatus {
         REQUESTED,
@@ -22,13 +23,14 @@ public class Ride {
         PREMIUM
     }
 
-    public Ride(String id, Passenger passenger, String startPoint, String destination, RideType type) {
+    public Ride(String id, Passenger passenger, String startPoint, String destination, RideType type, double fare) {
         this.id = id;
         this.type = type;
         this.startPoint = startPoint;
         this.passenger = passenger;
         this.destination = destination;
         this.status = RideStatus.REQUESTED;
+        this.fare = fare;
     }
 
     public String getId() {
@@ -59,11 +61,19 @@ public class Ride {
         return type;
     }
 
+    public double getFare() {
+        return fare;
+    }
+
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
 
     public void setStatus(RideStatus status) {
         this.status = status;
+    }
+
+    public void setFare(double fare) {
+        this.fare = fare;
     }
 }
